@@ -12,10 +12,10 @@ import {
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import Themechanger from "../components/ThemeChanger";
+import { UserAuth } from "../context/AuthContext";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
   const menuItems = [
     "Profile",
     "Dashboard",
@@ -29,8 +29,18 @@ export default function App() {
     "Log Out",
   ];
 
+  const { user, googleSignIn, logOut } = UserAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div>
+    <div className="mt-3 border-b-[1px] border-black dark:border-white border-opacity-20 dark:border-opacity-20">
       <Navbar onMenuOpenChange={setIsMenuOpen}>
         <NavbarContent>
           <NavbarMenuToggle
@@ -60,10 +70,12 @@ export default function App() {
           </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
-          <div className="flex">
+          <div className="flex w-[200px] justify-evenly">
             <Themechanger />
             <NavbarItem className="hidden lg:flex">
-              <Link href="#">Login</Link>
+              <Link href="#" onClick={handleSignIn}>
+                Login
+              </Link>
             </NavbarItem>
             <NavbarItem>
               <Button as={Link} color="primary" href="#" variant="flat">
@@ -85,7 +97,6 @@ export default function App() {
                 }
                 className="w-full"
                 href="#"
-                size="lg"
               >
                 {item}
               </Link>
