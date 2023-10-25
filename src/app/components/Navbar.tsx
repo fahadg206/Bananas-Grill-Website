@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -26,6 +26,7 @@ import { UserAuth } from "../context/AuthContext";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [loading, setLoading] = useState(true);
   const menuItems = [
     "Profile",
     "Dashboard",
@@ -57,7 +58,15 @@ export default function App() {
     }
   };
 
-  console.log(user);
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 50);
+      });
+      setLoading(false);
+    };
+    checkAuthentication();
+  }, [user]);
 
   return (
     <div className="mt-3 border-b-[1px] border-black dark:border-white border-opacity-20 dark:border-opacity-20">
@@ -92,7 +101,7 @@ export default function App() {
         <NavbarContent justify="end">
           <div className="flex w-[200px] justify-evenly">
             <Themechanger />
-            {!user ? (
+            {loading ? null : !user ? (
               <div className="flex">
                 <NavbarItem className="flex mr-4">
                   <Link href="#" onClick={handleSignIn}>
@@ -109,7 +118,7 @@ export default function App() {
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <div className="flex items-center">
-                    <div className="mr-2">{user.displayName}</div>
+                    <div className="mr-2 text-[12px]">{user.displayName}</div>
                     <Image
                       src={user.photoURL}
                       className="rounded-full cursor-pointer"
