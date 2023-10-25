@@ -9,6 +9,9 @@ import {
   NavbarMenuToggle,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { GrClose } from "react-icons/gr";
+import Logo from "../images/images.jpg";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,7 +28,7 @@ import Themechanger from "../components/ThemeChanger";
 import { UserAuth } from "../context/AuthContext";
 
 export default function App() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const menuItems = [
     "Profile",
@@ -73,11 +76,17 @@ export default function App() {
       <Navbar onMenuOpenChange={setIsMenuOpen}>
         <NavbarContent>
           <NavbarMenuToggle
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            className="sm:hidden"
+            aria-label={isMenuOpen ? <GiHamburgerMenu /> : <GrClose />}
+            className="block md:hidden"
           />
           <NavbarBrand>
-            <p className="font-bold text-inherit">ACME</p>
+            <Image
+              src={Logo}
+              alt="logo"
+              width={55}
+              height={55}
+              className="rounded-full m-2"
+            />
           </NavbarBrand>
         </NavbarContent>
 
@@ -118,7 +127,9 @@ export default function App() {
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <div className="flex items-center">
-                    <div className="mr-2 text-[12px]">{user.displayName}</div>
+                    <div className="mr-2 text-[12px]">
+                      {`Hello, ${user.displayName.split(" ")[0]}`}
+                    </div>
                     <Image
                       src={user.photoURL}
                       className="rounded-full cursor-pointer"
