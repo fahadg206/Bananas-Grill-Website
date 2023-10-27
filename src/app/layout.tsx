@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#EDEDED] dark:bg-[#000000] text-[#1a1a1c] dark:text-[#EDEDED]">
+      <body className="bg-[#EDEDED] dark:bg-[#000000] text-[#1a1a1c] dark:text-[#EDEDED] w-screen h-screen">
         <AuthContextProvider>
           <Providers>
             <div>

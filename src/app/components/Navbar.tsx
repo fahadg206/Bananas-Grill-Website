@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/navbar";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GrClose } from "react-icons/gr";
-import Logo from "../images/images.jpg";
+import BgLogo from "../images/images.jpg";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,24 +26,79 @@ import { BiLogInCircle } from "react-icons/bi";
 import { Avatar } from "@nextui-org/Avatar";
 import Themechanger from "../components/ThemeChanger";
 import { UserAuth } from "../context/AuthContext";
+import { motion } from "framer-motion";
+import { FiMenu, FiArrowRight } from "react-icons/fi";
 
-export default function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
+const FlipNavWrapper = () => {
+  return (
+    <div className="">
+      <FlipNav />
+      <div className="h-72" />
+    </div>
+  );
+};
 
+const FlipNav = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <nav className="p-4 border-b-[1px] border-gray-200 flex items-center justify-between relative">
+      <NavLeft setIsOpen={setIsOpen} />
+      <NavRight />
+      <NavMenu isOpen={isOpen} />
+    </nav>
+  );
+};
+
+const NavLeft = ({
+  setIsOpen,
+}: {
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  return (
+    <div className="flex items-center gap-6">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="block lg:hidden text-gray-950 text-2xl"
+        onClick={() => setIsOpen((pv) => !pv)}
+      >
+        <FiMenu />
+      </motion.button>
+      <Image
+        src={BgLogo}
+        alt="logo"
+        width={55}
+        height={55}
+        className="rounded-full "
+      />
+      <NavLink text="Solutions" />
+      <NavLink text="Community" />
+      <NavLink text="Pricing" />
+      <NavLink text="Company" />
+    </div>
+  );
+};
+
+const NavLink = ({ text }: { text: string }) => {
+  return (
+    <a
+      href="#"
+      rel="nofollow"
+      className="hidden lg:block h-[30px] overflow-hidden font-medium"
+    >
+      <motion.div whileHover={{ y: -30 }}>
+        <span className="flex items-center h-[30px] text-gray-500">{text}</span>
+        <span className="flex items-center h-[30px] text-indigo-600">
+          {text}
+        </span>
+      </motion.div>
+    </a>
+  );
+};
+
+const NavRight = () => {
   const { user, googleSignIn, logOut } = UserAuth();
+  const [loading, setLoading] = useState(true);
 
   const handleSignIn = async () => {
     try {
@@ -72,50 +127,18 @@ export default function App() {
   }, [user]);
 
   return (
-    <div className="mt-3 border-b-[1px] border-black dark:border-white border-opacity-20 dark:border-opacity-20">
-      <Navbar onMenuOpenChange={setIsMenuOpen}>
-        <NavbarContent>
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? <GiHamburgerMenu /> : <GrClose />}
-            className="block md:hidden"
-          />
-          <NavbarBrand>
-            <Image
-              src={Logo}
-              alt="logo"
-              width={55}
-              height={55}
-              className="rounded-full m-2"
-            />
-          </NavbarBrand>
-        </NavbarContent>
-
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Features
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link href="#" aria-current="page">
-              Customers
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Integrations
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-        <NavbarContent justify="end">
-          <div className="flex w-[200px] justify-evenly">
-            <Themechanger />
+    <div className="flex items-center justify-center gap-4">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className=" bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent font-medium rounded-md whitespace-nowrap"
+      >
+        <Navbar className="">
+          <NavbarContent>
             {loading ? null : !user ? (
               <div className="flex">
-                <NavbarItem className="flex mr-4">
-                  <Link href="#" onClick={handleSignIn}>
-                    <FcGoogle size={30} />
-                  </Link>
+                <NavbarItem className="ml-7">
+                  <FcGoogle onClick={handleSignIn} size={35} />
                 </NavbarItem>
                 <NavbarItem>
                   <Button as={Link} color="primary" href="#" variant="flat">
@@ -195,28 +218,92 @@ export default function App() {
                 </DropdownMenu>
               </Dropdown>
             )}
-          </div>
-        </NavbarContent>
-        <NavbarMenu>
-          {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                className="w-full"
-                href="#"
-              >
-                {item}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </NavbarMenu>
-      </Navbar>
+          </NavbarContent>
+        </Navbar>
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="mr-4 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium rounded-md whitespace-nowrap"
+      >
+        Sign up
+      </motion.button>
     </div>
   );
-}
+};
+
+const NavMenu = ({ isOpen }: { isOpen: boolean }) => {
+  return (
+    <motion.div
+      variants={menuVariants}
+      initial="closed"
+      animate={isOpen ? "open" : "closed"}
+      className="absolute p-4  shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-4 h-screen bg-black"
+    >
+      <MenuLink text="Solutions" />
+      <MenuLink text="Community" />
+      <MenuLink text="Pricing" />
+      <MenuLink text="Company" />
+    </motion.div>
+  );
+};
+
+const MenuLink = ({ text }: { text: string }) => {
+  return (
+    <motion.a
+      variants={menuLinkVariants}
+      rel="nofollow"
+      href="#"
+      className="h-[30px] overflow-hidden font-medium text-lg flex items-start gap-2"
+    >
+      <motion.span variants={menuLinkArrowVariants}>
+        <FiArrowRight className="h-[30px] text-gray-950" />
+      </motion.span>
+      <motion.div whileHover={{ y: -30 }}>
+        <span className="flex items-center h-[30px] text-gray-500">{text}</span>
+        <span className="flex items-center h-[30px] text-indigo-600">
+          {text}
+        </span>
+      </motion.div>
+    </motion.a>
+  );
+};
+
+export default FlipNavWrapper;
+
+const menuVariants = {
+  open: {
+    scaleY: 1,
+    transition: {
+      when: "beforeChildren",
+      staggerChildren: 0.1,
+    },
+  },
+  closed: {
+    scaleY: 0,
+    transition: {
+      when: "afterChildren",
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const menuLinkVariants = {
+  open: {
+    y: 0,
+    opacity: 1,
+  },
+  closed: {
+    y: -10,
+    opacity: 0,
+  },
+};
+
+const menuLinkArrowVariants = {
+  open: {
+    x: 0,
+  },
+  closed: {
+    x: -4,
+  },
+};
